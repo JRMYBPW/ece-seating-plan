@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ECE Dinner Seating Plan</title>
-
+ 
 <style>
 body{
     font-family: Arial,sans-serif;
@@ -12,242 +13,93 @@ body{
     padding:20px;
     background:#f7f7f7;
 }
-
+ 
 h1,h2{
     text-align:center;
 }
-
+ 
 .search-box{
     text-align:center;
     margin:30px;
 }
-
+ 
 input{
     width:350px;
     max-width:90%;
     padding:12px;
     font-size:18px;
 }
-
+ 
 #result{
-    font-size:22px;
-    font-weight:bold;
     text-align:center;
     margin-top:20px;
     color:#004080;
 }
-
-.location{
-    text-align:center;
-    font-size:20px;
-    color:#666;
-    margin-bottom:30px;
+ 
+.result-item{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:18px;
 }
-
+ 
+.result-item small{
+    display:block;
+    font-size:18px;
+    color:#666;
+    font-weight:normal;
+    margin-top:4px;
+}
+ 
+.no-result{
+    font-size:18px;
+    color:#a00;
+}
+ 
 .tables{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
     gap:20px;
 }
-
+ 
 .table-card{
     background:white;
     border-radius:10px;
     padding:15px;
     box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
-
+ 
 .table-card h3{
     margin-top:0;
     color:#004080;
 }
-
+ 
 ul{
     padding-left:18px;
 }
 </style>
-
+ 
 </head>
 <body>
-
+ 
 <div style="text-align:center;margin-bottom:20px;">
-    <img src="./bunge.png" alt="Bunge" style="width:300px;">
+    <img src="./bunge.png" alt="Bunge" style="width:300px;max-width:80%;">
 </div>
-
+ 
 <h1>ECE Dinner Seating Plan</h1>
-
+ 
 <div class="search-box">
-    <input type="text" id="search" placeholder="Type your name..." onkeyup="findGuest()">
+    <input type="text" id="search" placeholder="Type your name..." oninput="findGuest()" autocomplete="off">
 </div>
-
+ 
 <div id="result"></div>
-
-
-</div>
-
+ 
 <h2>Full Seating Plan</h2>
-
+ 
 <div class="tables" id="tables"></div>
-
+ 
 <script>
-
-const guests = {
-"Adil Aleuj":23,
-"Adrien Gragy":3,
-"Agah Mamahoglu":17,
-"Agnieszka Smarzewska":19,
-"Ahmed Safaa":24,
-"Alessandro Savoia":16,
-"Alexandre Rodo":25,
-"Alexandru Neagu":21,
-"Ali Berdai":23,
-"Amir Wassef":24,
-"Andrea Giaretta":16,
-"Andrea Poma":15,
-"Andrezj Rozycki":14,
-"Andrii But":14,
-"Andrii Paladii":3,
-"Aneta Babirádová":1,
-"Anna Kugat":3,
-"Apostolos Anthomelidis":25,
-"Apostolos Kkokkalis":25,
-"Arie Griffioen":10,
-"Ariel Handler":5,
-"Arkadiusz Wittke":20,
-"Arno Boersma":10,
-"Arthur Gnyp (RTD)":14,
-"Artur Golebiowski":20,
-"Augusto Aki Filho":10,
-"Ben Fraser":5,
-"Ben Samyn":12,
-"Brahim Ait":24,
-"Burçin Özkan":17,
-"Casper van Hooije":9,
-"Charley McAllister":11,
-"Cornel Boere":11,
-"Cristian Mihailescu":21,
-"Cyprien Lorain":2,
-"D. Artiushenko":4,
-"Dafer Charaf":23,
-"Daniel Fernandez-Manchon":16,
-"David Wylie":6,
-"Dennis Schorth":21,
-"Dimitri Vos":11,
-"Dragan Tomic":21,
-"Edit Meszaros":2,
-"Elad Sror":25,
-"Emam Gad":22,
-"Eoin Walsh":4,
-"Eros Focchi":15,
-"Eyal Koppel":25,
-"Ezzat Kadi":22,
-"Farid Christensen":24,
-"Federico Bernabini":15,
-"Floris Scheurleer":12,
-"Franz Mantler":12,
-"Gabriel Tejerina":8,
-"Grzegorz Sobczyński":13,
-"Habib Hijaj":23,
-"Hubert Francois":2,
-"Hugo van Efferen":9,
-"Huseyin Taser":18,
-"Ilias Benyahia":23,
-"Iryna Taran":3,
-"Isa Fahkri":9,
-"Iulian Avram":21,
-"Jaap de Graaf":10,
-"Jakub Matusiak":20,
-"James Maw":6,
-"Jan Hartvig Nielsen":11,
-"Janos Graszli":7,
-"Janos Nemeth":1,
-"Jaroslaw Hron":1,
-"Jaume Airmany":8,
-"Jean-Baptiste Faulque":5,
-"Joey Tulling":6,
-"John Bergin":11,
-"Joost Viehoff":25,
-"Judyta Szuksztul":13,
-"K.v.Yukhymenko":4,
-"Kacem Raji":24,
-"Karim Adid":24,
-"Kasper Landheer":9,
-"Kevin Tromp":9,
-"Koray Tüysüzoğlu":18,
-"L. Shvets":4,
-"Lubos Chladny":2,
-"Lucas Dorrestein":4,
-"Luis Camps":12,
-"Lukas van Behr":10,
-"Maarten Ten Doesschate":5,
-"Mahmoud Kalila":22,
-"Marco Benedetti":15,
-"Marcus Sommerfeldt":6,
-"Marek Brzozowski":20,
-"Maria Aranda":16,
-"Marien Klomp":10,
-"Marta Kukanauskas":19,
-"Martin Boekhoud":9,
-"Massimiliano Leone":15,
-"Mate Biricksai":4,
-"Mehmet Nour Yusuf":18,
-"Miguel Costa":8,
-"Milan Roganovic":21,
-"Mladen Terzic":21,
-"Mme Hijaj":23,
-"Mohamed Abou Nader":22,
-"Mohemed Rashed":22,
-"Ms Chaabouni":25,
-"Muhammed Idin":17,
-"Nader abu el nadar":24,
-"Nesrine":25,
-"Nick Williams":6,
-"Nicolas Chahine":22,
-"Nicolas Coudry":2,
-"Nikola Rajkovic":7,
-"Nil Taşkaldıran Öztürk":18,
-"Olga Tsymbaliuk":3,
-"Othmar Sorger":7,
-"Paul Stam":12,
-"Pavlína Zajíčková":1,
-"Pavlo Melnychuk":14,
-"Peter Brennecke":10,
-"Peter Visscher":11,
-"Petr Polak":19,
-"Philip Lynch":11,
-"Rafael Olaso":8,
-"Remigiusz Bagiński":19,
-"Roberto Frione":16,
-"Rody Smal":9,
-"Rouliot Edouard":15,
-"Rutger van der Hoeven":12,
-"Ryan McAuley":5,
-"Saverio Panico":16,
-"Sebastian Michalak":13,
-"Senjin Yang":5,
-"Sina Ariker":17,
-"Stanislaw Agrolok":13,
-"Stepan Vorobiov":14,
-"Tamer Khalil":22,
-"Taoufik Chafli":23,
-"Taras Kovatsenko":14,
-"Tetiana Genkina":3,
-"Thierry Cardon":9,
-"Tijn Roskamp":10,
-"Todor Stoykov":21,
-"Tom Boots":12,
-"Tunca Cengiz":18,
-"Ufuk Dogan":17,
-"Vladimr Milosevic":7,
-"Wael Abdullah":24,
-"Wael Shabarek":22,
-"Xavier van de Avenne":11,
-"Youssef Slimani":23,
-"Yunus Ulukaya":17,
-"Yusuf Memiş":18,
-"Yvon Pennors":2
-};
-
+ 
+// Single source of truth: the guest search list is built from this object.
 const tables = {
 1:["Aneta Babirádová","Janos Nemeth","Jaroslaw Hron","Pavlína Zajíčková"],
 2:["Lubos Chladny","Edit Meszaros","Yvon Pennors","Hubert Francois","Cyprien Lorain","Nicolas Coudry"],
@@ -275,44 +127,84 @@ const tables = {
 24:["Adil Aleuj","Ahmed Safaa","Amir Wassef","Brahim Ait","Gerald Theis","Kacem Raji","Nader abu el nadar","Wael Abdullah"],
 25:["Alexandre Rodo","Apostolos Anthomelidis","Apostolos Kkokkalis","Elad Sror","Eyal Koppel","Farid Christensen","Ms Chaabouni","Nesrine"]
 };
-
+ 
+const MAX_DOWNSTAIRS = 12;
+ 
+function floorOf(table){
+    return table <= MAX_DOWNSTAIRS ? "Downstairs" : "Upstairs";
+}
+ 
+// Lowercase + remove accents so "ozkan" finds "Özkan", "bagin" finds "Bagiński", etc.
+function normalize(str){
+    return str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ı/g, "i")
+        .replace(/ł/g, "l");
+}
+ 
+// Build the flat guest list automatically from `tables`
+const guestList = [];
+for (const t in tables) {
+    tables[t].forEach(name => {
+        guestList.push({ name: name, table: Number(t), key: normalize(name) });
+    });
+}
+ 
+function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+}
+ 
 function findGuest(){
-const input=document.getElementById("search").value.toLowerCase();
-
-for(const guest in guests){
-if(guest.toLowerCase().includes(input)&&input.length>1){
-
-const table=guests[guest];
-const floor=table<=12 ? "Downstairs" : "Upstairs";
-
-document.getElementById("result").innerHTML=
-`${guest}<br><br>Table ${table}<br>${floor}`;
-
-return;
+    const raw = document.getElementById("search").value.trim();
+    const input = normalize(raw);
+    const resultDiv = document.getElementById("result");
+ 
+    if (input.length < 2) {
+        resultDiv.innerHTML = "";
+        return;
+    }
+ 
+    // Every word typed must appear in the name (order does not matter)
+    const words = input.split(/\s+/);
+    const matches = guestList.filter(g => words.every(w => g.key.includes(w)));
+ 
+    if (matches.length === 0) {
+        resultDiv.innerHTML = '<div class="no-result">No guest found. Please check the spelling.</div>';
+        return;
+    }
+ 
+    resultDiv.innerHTML = matches.slice(0, 10).map(g =>
+        `<div class="result-item">${escapeHtml(g.name)}
+            <small>Table ${g.table} &ndash; ${floorOf(g.table)}</small>
+        </div>`
+    ).join("");
+ 
+    if (matches.length > 10) {
+        resultDiv.innerHTML += "<div>Too many results, please type more letters.</div>";
+    }
 }
+ 
+// Full seating plan
+const container = document.getElementById("tables");
+let html = "";
+ 
+for (let table = 1; table <= 25; table++) {
+    const people = tables[table] || [];
+ 
+    html += `<div class="table-card">
+        <h3>Table ${table}</h3>
+        <p><strong>${floorOf(table)}</strong></p>
+        <ul>${people.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
+    </div>`;
 }
-document.getElementById("result").innerHTML="";
-}
-
-const container=document.getElementById("tables");
-
-for(let table=1;table<=25;table++){
-
-let people=tables[table]||[];
-
-let html=`<div class="table-card">
-<h3>Table ${table}</h3>
-<p><strong>${table<=12 ? 'Downstairs':'Upstairs'}</strong></p>
-<ul>`;
-
-people.forEach(p=>html+=`<li>${p}</li>`);
-
-html+=`</ul></div>`;
-
-container.innerHTML+=html;
-}
-
+ 
+container.innerHTML = html;
+ 
 </script>
-
+ 
 </body>
 </html>
